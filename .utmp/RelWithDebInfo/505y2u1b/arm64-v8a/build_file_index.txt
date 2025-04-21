@@ -1,0 +1,2 @@
+D:\AR\GI204\Gi480_Week9\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
+D:\AR\GI204\Gi480_Week9\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt
