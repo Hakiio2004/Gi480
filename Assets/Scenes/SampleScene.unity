@@ -1443,9 +1443,10 @@ MonoBehaviour:
   _planeManager: {fileID: 1976268804}
   uiManager: {fileID: 1259608693}
   enemyPrefab: {fileID: 5511422868664837015, guid: 4fa03ca11b5ec6844bc1211ce6852197, type: 3}
-  enemyCount: 4
-  spawnRate: 4
-  deSpawnRate: 4
+  enemyCount: 20
+  spawnInterval: 5
+  minDespawnTime: 4
+  maxDespawnTime: 7
 --- !u!114 &1259608696
 MonoBehaviour:
   m_ObjectHideFlags: 0

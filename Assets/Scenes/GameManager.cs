@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using System.Collections.Generic;
@@ -13,26 +13,24 @@ public class GameManager : MonoBehaviour
     [Header("AR Components")]
     [SerializeField] private ARSession arSession;
     [SerializeField] private ARPlaneManager _planeManager;
-    
+
     [SerializeField] private UIManager uiManager;
-    [SerializeField] private  GameObject enemyPrefab;
+    [SerializeField] private GameObject enemyPrefab;
 
     [Header("Enemy Settings")]
-    [SerializeField] private int enemyCount = 2;
-    [SerializeField] private float spawnRate = 2f;
-    [SerializeField] private float deSpawnRate = 4f;
+    [SerializeField] private int enemyCount = 20; // เกิดทั้งหมด 20 ตัว
+    [SerializeField] private float spawnInterval = 5f; // เวลาห่างกันระหว่างแต่ละตัว
+    [SerializeField] private float minDespawnTime = 4f;
+    [SerializeField] private float maxDespawnTime = 7f;
 
     private List<GameObject> _spawnedEnemies = new List<GameObject>();
     private int _score = 0;
-
     private bool _gameStarted;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         UIManager.OnUIStartButton += StartGame;
         UIManager.OnUIRestartButton += RestartGame;
-
     }
 
     void StartGame()
@@ -49,6 +47,7 @@ public class GameManager : MonoBehaviour
             var lineVisual = GetComponent<LineRenderer>();
             if (lineVisual) lineVisual.enabled = false;
         }
+
         StartCoroutine(SpawnEnemies());
     }
 
@@ -63,11 +62,13 @@ public class GameManager : MonoBehaviour
     void SpawnEnemy()
     {
         if (_planeManager.trackables.count == 0) return;
-        List<ARPlane>planes = new List<ARPlane>();
+
+        List<ARPlane> planes = new List<ARPlane>();
         foreach (var plane in _planeManager.trackables)
         {
             planes.Add(plane);
         }
+
         var randomPlane = planes[Random.Range(0, planes.Count)];
         var randomPlanPosition = GetRandomPosition(randomPlane);
 
@@ -81,40 +82,40 @@ public class GameManager : MonoBehaviour
             enemyScript.OnEnemyDestoryed += AddScore;
         }
 
-
-        StartCoroutine(SpawnEnemies());
+        // เรียกให้ศัตรูตัวนี้ despawn หลังเวลาสุ่ม
+        float randomDespawnTime = Random.Range(minDespawnTime, maxDespawnTime);
+        StartCoroutine(DespawnEnemies(enemy, randomDespawnTime));
     }
 
     Vector3 GetRandomPosition(ARPlane plane)
     {
-       var center = plane.center;
+        var center = plane.center;
         var size = plane.size * 0.5f;
         var randomX = Random.Range(center.x, size.x);
-        var randomZ = Random.Range(randomX, center.z);
-        
-        return new Vector3(center.x + randomX , center.y,center.z + randomZ);
+        var randomZ = Random.Range(center.z, size.y);
+
+        return new Vector3(center.x + randomX, center.y, center.z + randomZ);
     }
 
     IEnumerator SpawnEnemies()
     {
-        while (_gameStarted)
+        for (int i = 0; i < enemyCount; i++)
         {
-            if (_spawnedEnemies.Count < enemyCount)
-            {
-                SpawnEnemy();
-            }
-            yield return new WaitForSeconds(spawnRate);
+            SpawnEnemy();
+            yield return new WaitForSeconds(spawnInterval);
         }
     }
-    IEnumerator DespawnEnemies()
+
+    IEnumerator DespawnEnemies(GameObject enemy, float delay)
     {
-        yield return new WaitForSeconds(deSpawnRate);
-        if (_spawnedEnemies.Contains(enemyPrefab))
+        yield return new WaitForSeconds(delay);
+        if (_spawnedEnemies.Contains(enemy))
         {
-            _spawnedEnemies.Remove(enemyPrefab);
-            Destroy(enemyPrefab );
+            _spawnedEnemies.Remove(enemy);
+            Destroy(enemy);
         }
     }
+
     void AddScore()
     {
         _score++;
