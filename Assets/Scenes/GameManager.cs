@@ -1,27 +1,20 @@
-﻿using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.XR.ARFoundation;
+﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.XR.ARFoundation;
 using Random = UnityEngine.Random;
 using System.Collections;
-using Unity.VisualScripting;
 
 public class GameManager : MonoBehaviour
 {
     [Header("References")]
-
-    [Header("AR Components")]
     [SerializeField] private ARSession arSession;
     [SerializeField] private ARPlaneManager _planeManager;
-
     [SerializeField] private UIManager uiManager;
     [SerializeField] private GameObject enemyPrefab;
 
     [Header("Enemy Settings")]
     [SerializeField] private int enemyCount = 20; // เกิดทั้งหมด 20 ตัว
     [SerializeField] private float spawnInterval = 5f; // เวลาห่างกันระหว่างแต่ละตัว
-    [SerializeField] private float minDespawnTime = 4f;
-    [SerializeField] private float maxDespawnTime = 7f;
 
     private List<GameObject> _spawnedEnemies = new List<GameObject>();
     private int _score = 0;
@@ -53,7 +46,6 @@ public class GameManager : MonoBehaviour
 
     void RestartGame()
     {
-        print("Restarted!");
         _gameStarted = false;
         arSession.Reset();
         _planeManager.enabled = true;
@@ -78,13 +70,8 @@ public class GameManager : MonoBehaviour
         var enemyScript = enemy.GetComponentInChildren<EnemyScript>();
         if (enemyScript != null)
         {
-            print("Run event");
             enemyScript.OnEnemyDestoryed += AddScore;
         }
-
-        // เรียกให้ศัตรูตัวนี้ despawn หลังเวลาสุ่ม
-        float randomDespawnTime = Random.Range(minDespawnTime, maxDespawnTime);
-        StartCoroutine(DespawnEnemies(enemy, randomDespawnTime));
     }
 
     Vector3 GetRandomPosition(ARPlane plane)
@@ -103,16 +90,6 @@ public class GameManager : MonoBehaviour
         {
             SpawnEnemy();
             yield return new WaitForSeconds(spawnInterval);
-        }
-    }
-
-    IEnumerator DespawnEnemies(GameObject enemy, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        if (_spawnedEnemies.Contains(enemy))
-        {
-            _spawnedEnemies.Remove(enemy);
-            Destroy(enemy);
         }
     }
 
