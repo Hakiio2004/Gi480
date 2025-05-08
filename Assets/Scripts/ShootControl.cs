@@ -10,20 +10,31 @@ public class ShootControl : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float bulletSpeed = 10f;
     [SerializeField] private float bulletLifeTime = 3f;
-    [SerializeField] private int maxAmmo = 5; // จำนวนกระสุนสูงสุดที่สามารถยิงได้
+    [SerializeField] private int maxAmmo = 5; // จำนวนกระสุนสูงสุด
     [SerializeField] private float reloadTime = 2f; // เวลาที่ใช้ในการรีโหลด
 
     private int currentAmmo;
     private bool isReloading = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private UIManager uiManager;
+
+    void OnEnable()
     {
-        currentAmmo = maxAmmo;
         UIManager.OnUIShootButton += Shoot;
     }
 
-    // Update is called once per frame
+    void OnDisable()
+    {
+        UIManager.OnUIShootButton -= Shoot;
+    }
+
+    void Start()
+    {
+        currentAmmo = maxAmmo;
+        uiManager = FindObjectOfType<UIManager>();
+        uiManager.UpdateBulletUI(currentAmmo); // แสดงกระสุนตอนเริ่ม
+    }
+
     void Update()
     {
         // รีโหลดอัตโนมัติหากกระสุนหมด
@@ -33,21 +44,22 @@ public class ShootControl : MonoBehaviour
         }
     }
 
-    // ฟังก์ชันยิงกระสุน
     void Shoot()
     {
         if (isReloading || currentAmmo <= 0)
             return;
 
-        var bullet = Instantiate(bulletPrefab, cameraTransform.position, Quaternion.identity);
-        var rb = bullet.GetComponent<Rigidbody>();
+        Debug.Log("Shoot called");
+
+        GameObject bullet = Instantiate(bulletPrefab, cameraTransform.position, Quaternion.identity);
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
         rb.AddForce(cameraTransform.forward * bulletSpeed, ForceMode.Impulse);
         Destroy(bullet, bulletLifeTime);
 
         currentAmmo--;
+        uiManager.UpdateBulletUI(currentAmmo); // อัปเดต UI กระสุน
     }
 
-    // ฟังก์ชันรีโหลด
     private IEnumerator Reload()
     {
         isReloading = true;
@@ -57,6 +69,7 @@ public class ShootControl : MonoBehaviour
 
         currentAmmo = maxAmmo;
         isReloading = false;
+        uiManager.UpdateBulletUI(currentAmmo); // เติมกระสุนใน UI
         Debug.Log("Reload complete!");
     }
 }

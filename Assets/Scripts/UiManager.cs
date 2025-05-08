@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
@@ -24,6 +24,8 @@ public class UIManager : MonoBehaviour
     public static event Action OnUIRestartButton;
     public static event Action OnUIShootButton;
 
+    [SerializeField] private Image[] bullets;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -37,6 +39,11 @@ public class UIManager : MonoBehaviour
        
         crosshair.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(false);
+
+        foreach (var bullet in bullets)
+        {
+            bullet.gameObject.SetActive(false);
+        }
     }
 
     void StartButtonPressed()
@@ -48,7 +55,12 @@ public class UIManager : MonoBehaviour
         shootButton.gameObject.SetActive(true);
 
         scoreText.gameObject.SetActive(true);
-        crosshair.gameObject.SetActive(true); 
+        crosshair.gameObject.SetActive(true);
+
+        foreach (var bullet in bullets)
+        {
+            bullet.gameObject.SetActive(true); // เริ่มเกมถึงแสดง
+        }
     }
 
     void RestartButtonPressed()
@@ -61,6 +73,11 @@ public class UIManager : MonoBehaviour
 
         scoreText.gameObject.SetActive(false);
         crosshair.gameObject.SetActive(false);
+
+        foreach (var bullet in bullets)
+        {
+            bullet.gameObject.SetActive(false);
+        }
     }
 
     void ShootButtonPressed() 
@@ -72,5 +89,12 @@ public class UIManager : MonoBehaviour
     {
         scoreText.text = $"SCORE: {score}";
         print(score);
+    }
+    public void UpdateBulletUI(int currentAmmo)
+    {
+        for (int i = 0; i < bullets.Length; i++)
+        {
+            bullets[i].gameObject.SetActive(i < currentAmmo);
+        }
     }
 }
