@@ -7,8 +7,8 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class UIManager : MonoBehaviour
 {
-   
-    
+
+
     [Header("Button Setup")]
     [SerializeField] private Button startButton;
     [SerializeField] private Button restartButton;
@@ -26,6 +26,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Image[] bullets;
 
+    [SerializeField] private TMP_Text gameOverText;
+    [SerializeField] private TMP_Text finalScoreText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,7 +38,7 @@ public class UIManager : MonoBehaviour
 
         restartButton.gameObject.SetActive(false);
         shootButton.gameObject.SetActive(false);
-       
+
         crosshair.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(false);
 
@@ -44,12 +46,14 @@ public class UIManager : MonoBehaviour
         {
             bullet.gameObject.SetActive(false);
         }
+        gameOverText.gameObject.SetActive(false);
+        finalScoreText.gameObject.SetActive(false);
     }
 
     void StartButtonPressed()
     {
         OnUIStartButton?.Invoke();
-        greetingText.gameObject.SetActive(false);
+        greetingText.gameObject.SetActive(false); // ปิดข้อความต้อนรับเมื่อกดปุ่ม Start
         startButton.gameObject.SetActive(false);
         restartButton.gameObject.SetActive(true);
         shootButton.gameObject.SetActive(true);
@@ -80,11 +84,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void ShootButtonPressed() 
-    { 
+    void ShootButtonPressed()
+    {
         OnUIShootButton?.Invoke();
     }
-   
+
     public void UpdateScore(int score)
     {
         scoreText.text = $"SCORE: {score}";
@@ -97,4 +101,16 @@ public class UIManager : MonoBehaviour
             bullets[i].gameObject.SetActive(i < currentAmmo);
         }
     }
+    public void ShowGameOver(int score)
+    {
+        gameOverText.gameObject.SetActive(true);
+        finalScoreText.text = $"Final Score: {score}";
+        finalScoreText.gameObject.SetActive(true);
+    }
+    public void QuitGame()
+    {
+        Debug.Log("Quit Game");
+        Application.Quit();
+    }
+   
 }

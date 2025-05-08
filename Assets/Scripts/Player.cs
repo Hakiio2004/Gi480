@@ -4,6 +4,17 @@ public class Player : MonoBehaviour
  
 {
     public float health = 100f;
+    private UIManager uiManager;
+    private GameManager gameManager;
+
+    private int score = 0; // สมมติว่าคุณมีระบบเก็บ score แล้ว
+
+    private void Start()
+    {
+        uiManager = FindObjectOfType<UIManager>();
+        uiManager = FindObjectOfType<UIManager>();
+        gameManager = FindObjectOfType<GameManager>();
+    }
 
     public void TakeDamage(float damage)
     {
@@ -19,7 +30,13 @@ public class Player : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player died!");
-        // อาจทำ Game Over หรือเอฟเฟกต์จบเกมที่นี่
+
+        if (uiManager != null && gameManager != null)
+        {
+            int finalScore = gameManager.GetScore();
+            uiManager.ShowGameOver(finalScore);
+            gameManager.GameOver(); // ✅ หยุดทุกอย่าง
+        }
     }
 }
 

@@ -11,7 +11,8 @@ public class EnemyScript : MonoBehaviour
 
     private Transform playerTransform;
     private bool isDestroyed = false;
-
+    private GameManager gameManager;
+    
     private void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player"); // ให้แน่ใจว่า Player มี tag "Player"
@@ -23,22 +24,21 @@ public class EnemyScript : MonoBehaviour
         {
             Debug.LogWarning("Player not found in scene!");
         }
+        gameManager = FindObjectOfType<GameManager>();
+       
     }
 
     private void Update()
     {
-        if (!isDestroyed && playerTransform != null)
-        {
-            // หมุนเข้าหา Player
-            transform.LookAt(playerTransform);
+        if (isDestroyed || playerTransform == null || (gameManager != null && gameManager.IsGameOver())) return;
 
-            // เคลื่อนที่เข้าหา Player
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                playerTransform.position,
-                moveSpeed * Time.deltaTime
-            );
-        }
+        transform.LookAt(playerTransform);
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            playerTransform.position,
+            moveSpeed * Time.deltaTime
+        );
+       
     }
     public void TakeDamage(float amount)
     {
@@ -97,4 +97,5 @@ public class EnemyScript : MonoBehaviour
             }
         }
     }
+
 }

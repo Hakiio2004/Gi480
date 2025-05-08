@@ -98,4 +98,31 @@ public class GameManager : MonoBehaviour
         _score++;
         uiManager.UpdateScore(_score);
     }
+    public int GetScore()
+    {
+        return _score;
+    }
+    private bool isGameOver = false;
+
+    public void GameOver()
+    {
+        isGameOver = true;
+
+        // หยุด Spawn ศัตรู
+        StopAllCoroutines();
+
+        // ลบศัตรูที่เหลือ
+        foreach (var enemy in _spawnedEnemies)
+        {
+            if (enemy != null)
+                Destroy(enemy);
+        }
+
+        _spawnedEnemies.Clear();
+    }
+    public bool IsGameOver()
+    {
+        return isGameOver;
+    }
+
 }
