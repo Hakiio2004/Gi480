@@ -1229,7 +1229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startButton: {fileID: 238214872}
   restartButton: {fileID: 182805087}
-  shootButton: {fileID: 0}
+  shootButton: {fileID: 1999998646}
   greetingText: {fileID: 1844227610}
   scoreText: {fileID: 1316660485}
   crosshair: {fileID: 1114394663}
