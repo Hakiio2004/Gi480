@@ -1,25 +1,33 @@
 using UnityEngine;
 
 public class Player : MonoBehaviour
- 
 {
     public float health = 100f;
     private UIManager uiManager;
     private GameManager gameManager;
-
-    private int score = 0; // สมมติว่าคุณมีระบบเก็บ score แล้ว
+    private HealthBar healthBar;
 
     private void Start()
     {
         uiManager = FindObjectOfType<UIManager>();
-        uiManager = FindObjectOfType<UIManager>();
         gameManager = FindObjectOfType<GameManager>();
+        healthBar = FindObjectOfType<HealthBar>();
+
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(health);
+        }
     }
 
     public void TakeDamage(float damage)
     {
         health -= damage;
         Debug.Log("Player took damage: " + damage);
+
+        if (healthBar != null)
+        {
+            healthBar.SetHealth(health);
+        }
 
         if (health <= 0f)
         {
@@ -39,4 +47,3 @@ public class Player : MonoBehaviour
         }
     }
 }
-
