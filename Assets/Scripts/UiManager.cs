@@ -28,6 +28,10 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TMP_Text gameOverText;
     [SerializeField] private TMP_Text finalScoreText;
+    [SerializeField] private Button reloadButton;
+
+    public static event Action OnUIReloadButton;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -36,8 +40,11 @@ public class UIManager : MonoBehaviour
         restartButton.onClick.AddListener(RestartButtonPressed);
         shootButton.onClick.AddListener(ShootButtonPressed);
 
+        reloadButton.onClick.AddListener(ReloadButtonPressed);
+
         restartButton.gameObject.SetActive(false);
         shootButton.gameObject.SetActive(false);
+        reloadButton.gameObject.SetActive(false);
 
         crosshair.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(false);
@@ -60,6 +67,7 @@ public class UIManager : MonoBehaviour
 
         scoreText.gameObject.SetActive(true);
         crosshair.gameObject.SetActive(true);
+        reloadButton.gameObject.SetActive(true);
 
         foreach (var bullet in bullets)
         {
@@ -77,6 +85,7 @@ public class UIManager : MonoBehaviour
 
         scoreText.gameObject.SetActive(false);
         crosshair.gameObject.SetActive(false);
+        reloadButton.gameObject.SetActive(false);
 
         foreach (var bullet in bullets)
         {
@@ -112,5 +121,9 @@ public class UIManager : MonoBehaviour
         Debug.Log("Quit Game");
         Application.Quit();
     }
-   
+    void ReloadButtonPressed()
+    {
+        OnUIReloadButton?.Invoke();
+
+    }
 }

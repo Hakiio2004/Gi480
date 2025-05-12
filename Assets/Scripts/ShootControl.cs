@@ -21,11 +21,13 @@ public class ShootControl : MonoBehaviour
     void OnEnable()
     {
         UIManager.OnUIShootButton += Shoot;
+        UIManager.OnUIReloadButton += ManualReload;
     }
 
     void OnDisable()
     {
         UIManager.OnUIShootButton -= Shoot;
+        UIManager.OnUIReloadButton -= ManualReload;
     }
 
     void Start()
@@ -71,5 +73,12 @@ public class ShootControl : MonoBehaviour
         isReloading = false;
         uiManager.UpdateBulletUI(currentAmmo); // เติมกระสุนใน UI
         Debug.Log("Reload complete!");
+    }
+    void ManualReload()
+    {
+        if (!isReloading && currentAmmo < maxAmmo)
+        {
+            StartCoroutine(Reload());
+        }
     }
 }
