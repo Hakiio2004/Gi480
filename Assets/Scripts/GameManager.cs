@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ARSession arSession;
     [SerializeField] private ARPlaneManager _planeManager;
     [SerializeField] private UIManager uiManager;
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject[] enemyPrefabs;
 
     [Header("Enemy Settings")]
     [SerializeField] private int enemyCount = 20; // เกิดทั้งหมด 20 ตัว
@@ -64,8 +64,8 @@ public class GameManager : MonoBehaviour
         var randomPlane = planes[Random.Range(0, planes.Count)];
         var randomPlanPosition = GetRandomPosition(randomPlane);
 
-        var enemy = Instantiate(enemyPrefab, randomPlanPosition, Quaternion.identity);
-        _spawnedEnemies.Add(enemy);
+        var prefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
+        var enemy = Instantiate(prefab, randomPlanPosition, Quaternion.identity);
 
         var enemyScript = enemy.GetComponentInChildren<EnemyScript>();
         if (enemyScript != null)

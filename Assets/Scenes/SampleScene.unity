@@ -1461,7 +1461,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &797666754
 GameObject:
@@ -1808,6 +1808,10 @@ MonoBehaviour:
   gameOverText: {fileID: 1376741682}
   finalScoreText: {fileID: 1653527772}
   reloadButton: {fileID: 493635338}
+  startSFX: {fileID: 8300000, guid: f2faacad47d57694987164a193af9150, type: 3}
+  restartSFX: {fileID: 8300000, guid: f2faacad47d57694987164a193af9150, type: 3}
+  shootSFX: {fileID: 8300000, guid: 731aa6cd2d755cc4bbbd404ced6d63f0, type: 3}
+  reloadSFX: {fileID: 8300000, guid: 54181f036f9c8134b9a29e646c457359, type: 3}
 --- !u!1 &1001901683
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,9 +2433,11 @@ MonoBehaviour:
   arSession: {fileID: 1425295618}
   _planeManager: {fileID: 1976268804}
   uiManager: {fileID: 977608124}
-  enemyPrefab: {fileID: 2146593865814216761, guid: 8c7e1c9471b666a4b983077b88e11959, type: 3}
-  enemyCount: 20
-  spawnInterval: 5
+  enemyPrefabs:
+  - {fileID: 511766287641494037, guid: e80f5cd15ac1f47468cdc2d5660aa3ef, type: 3}
+  - {fileID: 2146593865814216761, guid: 8c7e1c9471b666a4b983077b88e11959, type: 3}
+  enemyCount: 100
+  spawnInterval: 3
 --- !u!114 &1259608696
 MonoBehaviour:
   m_ObjectHideFlags: 0
