@@ -41,13 +41,13 @@ public class UIManager : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        // Setup Button Events
+        
         startButton.onClick.AddListener(StartButtonPressed);
         restartButton.onClick.AddListener(RestartButtonPressed);
         shootButton.onClick.AddListener(ShootButtonPressed);
         reloadButton.onClick.AddListener(ReloadButtonPressed);
 
-        // Hide UI elements initially
+        
         restartButton.gameObject.SetActive(false);
         shootButton.gameObject.SetActive(false);
         reloadButton.gameObject.SetActive(false);
@@ -94,6 +94,9 @@ public class UIManager : MonoBehaviour
         crosshair.gameObject.SetActive(false);
         reloadButton.gameObject.SetActive(false);
 
+        gameOverText.gameObject.SetActive(false);
+        finalScoreText.gameObject.SetActive(false);
+
         foreach (var bullet in bullets)
         {
             bullet.gameObject.SetActive(false);
@@ -139,7 +142,7 @@ public class UIManager : MonoBehaviour
         Application.Quit();
     }
 
-    // ✅ นี่คือฟังก์ชันที่ต้องมี เพื่อไม่ให้ขึ้นแดง
+   
     private void PlaySound(AudioClip clip)
     {
         if (clip != null && audioSource != null)

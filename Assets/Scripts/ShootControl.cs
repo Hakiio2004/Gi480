@@ -10,8 +10,8 @@ public class ShootControl : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float bulletSpeed = 10f;
     [SerializeField] private float bulletLifeTime = 3f;
-    [SerializeField] private int maxAmmo = 5; // จำนวนกระสุนสูงสุด
-    [SerializeField] private float reloadTime = 2f; // เวลาที่ใช้ในการรีโหลด
+    [SerializeField] private int maxAmmo = 5; 
+    [SerializeField] private float reloadTime = 2f;
 
     private int currentAmmo;
     private bool isReloading = false;

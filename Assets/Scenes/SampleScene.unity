@@ -2470,11 +2470,12 @@ MonoBehaviour:
   arSession: {fileID: 1425295618}
   _planeManager: {fileID: 1976268804}
   uiManager: {fileID: 977608124}
-  enemyPrefabs:
-  - {fileID: 511766287641494037, guid: e80f5cd15ac1f47468cdc2d5660aa3ef, type: 3}
-  - {fileID: 2146593865814216761, guid: 8c7e1c9471b666a4b983077b88e11959, type: 3}
-  enemyCount: 100
-  spawnInterval: 3
+  virusSporePrefab: {fileID: 511766287641494037, guid: e80f5cd15ac1f47468cdc2d5660aa3ef, type: 3}
+  otherEnemyPrefab: {fileID: 2146593865814216761, guid: 8c7e1c9471b666a4b983077b88e11959, type: 3}
+  virusSporeCount: 5
+  virusSporeSpawnInterval: 5
+  otherEnemyCount: 15
+  otherEnemySpawnInterval: 3
 --- !u!114 &1259608696
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -10,11 +10,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private ARSession arSession;
     [SerializeField] private ARPlaneManager _planeManager;
     [SerializeField] private UIManager uiManager;
-    [SerializeField] private GameObject[] enemyPrefabs;
+    [SerializeField] private GameObject virusSporePrefab; 
+    [SerializeField] private GameObject otherEnemyPrefab; 
 
     [Header("Enemy Settings")]
-    [SerializeField] private int enemyCount = 20; // เกิดทั้งหมด 20 ตัว
-    [SerializeField] private float spawnInterval = 5f; // เวลาห่างกันระหว่างแต่ละตัว
+    [SerializeField] private int virusSporeCount = 5; 
+    [SerializeField] private float virusSporeSpawnInterval = 5f; 
+    [SerializeField] private int otherEnemyCount = 15; 
+    [SerializeField] private float otherEnemySpawnInterval = 3f; 
 
     private List<GameObject> _spawnedEnemies = new List<GameObject>();
     private int _score = 0;
@@ -41,7 +44,8 @@ public class GameManager : MonoBehaviour
             if (lineVisual) lineVisual.enabled = false;
         }
 
-        StartCoroutine(SpawnEnemies());
+        StartCoroutine(SpawnVirusSpores());
+        StartCoroutine(SpawnOtherEnemies());
     }
 
     void RestartGame()
@@ -49,9 +53,22 @@ public class GameManager : MonoBehaviour
         _gameStarted = false;
         arSession.Reset();
         _planeManager.enabled = true;
+
+        FindObjectOfType<Player>()?.ResetHealth();
+        foreach (var enemy in _spawnedEnemies)
+        {
+            if (enemy != null)
+                Destroy(enemy);
+        }
+        _spawnedEnemies.Clear();
+
+        _score = 0;
+        uiManager.UpdateScore(_score);
+
+        isGameOver = false;
     }
 
-    void SpawnEnemy()
+    void SpawnEnemy(GameObject prefabToSpawn)
     {
         if (_planeManager.trackables.count == 0) return;
 
@@ -64,14 +81,14 @@ public class GameManager : MonoBehaviour
         var randomPlane = planes[Random.Range(0, planes.Count)];
         var randomPlanPosition = GetRandomPosition(randomPlane);
 
-        var prefab = enemyPrefabs[Random.Range(0, enemyPrefabs.Length)];
-        var enemy = Instantiate(prefab, randomPlanPosition, Quaternion.identity);
+        var enemy = Instantiate(prefabToSpawn, randomPlanPosition, Quaternion.identity);
 
         var enemyScript = enemy.GetComponentInChildren<EnemyScript>();
         if (enemyScript != null)
         {
             enemyScript.OnEnemyDestoryed += AddScore;
         }
+        _spawnedEnemies.Add(enemy);
     }
 
     Vector3 GetRandomPosition(ARPlane plane)
@@ -84,20 +101,30 @@ public class GameManager : MonoBehaviour
         return new Vector3(center.x + randomX, center.y, center.z + randomZ);
     }
 
-    IEnumerator SpawnEnemies()
+    IEnumerator SpawnVirusSpores()
     {
-        for (int i = 0; i < enemyCount; i++)
+        for (int i = 0; i < virusSporeCount; i++)
         {
-            SpawnEnemy();
-            yield return new WaitForSeconds(spawnInterval);
+            SpawnEnemy(virusSporePrefab);
+            yield return new WaitForSeconds(virusSporeSpawnInterval);
         }
     }
 
-    void AddScore()
+    IEnumerator SpawnOtherEnemies()
     {
-        _score++;
+        for (int i = 0; i < otherEnemyCount; i++)
+        {
+            SpawnEnemy(otherEnemyPrefab);
+            yield return new WaitForSeconds(otherEnemySpawnInterval);
+        }
+    }
+
+    public void AddScore(int points)
+    {
+        _score += points;
         uiManager.UpdateScore(_score);
     }
+
     public int GetScore()
     {
         return _score;
@@ -108,10 +135,8 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = true;
 
-        // หยุด Spawn ศัตรู
         StopAllCoroutines();
 
-        // ลบศัตรูที่เหลือ
         foreach (var enemy in _spawnedEnemies)
         {
             if (enemy != null)
@@ -124,5 +149,8 @@ public class GameManager : MonoBehaviour
     {
         return isGameOver;
     }
-
+    public bool IsGameStarted()
+    {
+        return _gameStarted;
+    }
 }

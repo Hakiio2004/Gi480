@@ -3,7 +3,8 @@ using System;
 
 public class EnemyScript : MonoBehaviour
 {
-    public event Action OnEnemyDestoryed;
+    public event Action<int> OnEnemyDestoryed;
+    public event Action OnEnemyDied; // Event แจ้งเมื่อตาย (สำหรับการ Respawn)
 
     [Header("Enemy Settings")]
     public float health = 10f;
@@ -12,10 +13,11 @@ public class EnemyScript : MonoBehaviour
     private Transform playerTransform;
     private bool isDestroyed = false;
     private GameManager gameManager;
-    
+    private int scoreValue = 1;
+
     private void Start()
     {
-        GameObject player = GameObject.FindGameObjectWithTag("Player"); // ให้แน่ใจว่า Player มี tag "Player"
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             playerTransform = player.transform;
@@ -25,7 +27,15 @@ public class EnemyScript : MonoBehaviour
             Debug.LogWarning("Player not found in scene!");
         }
         gameManager = FindObjectOfType<GameManager>();
-       
+
+        if (gameObject.name.StartsWith("virus spore"))
+        {
+            scoreValue = 10;
+        }
+        else if (gameObject.name.StartsWith("virus_gale_GEO"))
+        {
+            scoreValue = 1;
+        }
     }
 
     private void Update()
@@ -38,7 +48,6 @@ public class EnemyScript : MonoBehaviour
             playerTransform.position,
             moveSpeed * Time.deltaTime
         );
-       
     }
     public void TakeDamage(float amount)
     {
@@ -60,13 +69,22 @@ public class EnemyScript : MonoBehaviour
 
         if (giveScore)
         {
-            OnEnemyDestoryed?.Invoke();
+            OnEnemyDestoryed?.Invoke(scoreValue);
         }
 
-        Destroy(gameObject);
+        // แจ้ง GameManager ว่าตายแล้ว (สำหรับการ Respawn ถ้าเป็น virus spore)
+        if (gameObject.name.StartsWith("virus spore") && gameManager != null && gameManager.IsGameStarted())
+        {
+            OnEnemyDied?.Invoke();
+            gameObject.SetActive(false); // ปิดการทำงานของ GameObject ชั่วคราว
+        }
+        else
+        {
+            Destroy(gameObject); // ทำลายมอนสเตอร์อื่นๆ ตามปกติ
+        }
     }
 
-        private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Bullet"))
         {
@@ -83,9 +101,9 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
-        private void DealDamageToPlayer()
+    private void DealDamageToPlayer()
     {
-            if (playerTransform != null)
+        if (playerTransform != null)
         {
             Player playerHealth = playerTransform.GetComponent<Player>();
             if (playerHealth != null)
@@ -93,9 +111,8 @@ public class EnemyScript : MonoBehaviour
                 playerHealth.TakeDamage(20f);
                 Debug.Log("Enemy hit player for 20 damage!");
 
-                Die(false); // ทำลายตัวเองโดยไม่ให้คะแนน
+                Die(false);
             }
         }
     }
-
 }

@@ -43,7 +43,16 @@ public class Player : MonoBehaviour
         {
             int finalScore = gameManager.GetScore();
             uiManager.ShowGameOver(finalScore);
-            gameManager.GameOver(); // ✅ หยุดทุกอย่าง
+            gameManager.GameOver(); 
+        }
+    }
+    public void ResetHealth()
+    {
+        health = 100f;
+
+        if (healthBar != null)
+        {
+            healthBar.SetMaxHealth(health);
         }
     }
 }

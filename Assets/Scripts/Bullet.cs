@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float damage = 10f; // ดาเมจที่กระสุนจะสร้าง
+    public float damage = 10f; 
 
     private void OnCollisionEnter(Collision collision)
     {
